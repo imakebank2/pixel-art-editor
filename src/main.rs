@@ -18,7 +18,7 @@ fn main() -> eframe::Result {
     eframe::run_native(
         "Pixel art editor",
         native_options,
-        Box::new(|cc| Ok(Box::new(pixel_art_editor::TemplateApp::new(cc)))),
+        Box::new(|cc| Ok(Box::new(pixel_art_editor::App::new(cc)))),
     )
 }
 

@@ -1,48 +1,59 @@
 //! This is where you write the app
-pub struct TemplateApp {
-    // Example stuff:
+//! 
+
+/* Features: Eraser, eyedropper, twocolour choice (left/right click), paint bucket, undo/redo
+ Colour palatte: Microsoft paint colour palatte + transparent colour
+ Picture import/export to png
+*/
+
+// Canvas size is 8x8, 16x16 or 32x32 pixels.
+enum CanvasSize {
+    S8 = 8,
+    S16 = 16,
+    S32 = 32
+}
+
+pub struct App {
     label: String,
     value: f32,
+    canvas_size: CanvasSize
 }
 
-impl Default for TemplateApp {
-    fn default() -> Self {
+impl App {
+    // Called once before the first frame.
+    pub fn new(_cc: &eframe::CreationContext) -> Self {
         Self {
-            // Example stuff:
+            // Default values: 
             label: "Hello World!".to_owned(),
             value: 2.7,
-        }
+            canvas_size: CanvasSize::S16
+         }
+
     }
 }
 
-impl TemplateApp {
-    /// Called once before the first frame.
-    pub fn new(_cc: &eframe::CreationContext) -> Self {
-        Default::default()
-    }
-}
-
-impl eframe::App for TemplateApp {
-
-    /// Called each time the UI needs repainting, which may be many times per second.
+impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+
+        let scaling_factor = ctx.pixels_per_point();
+
         // Put your widgets into a `SidePanel`, `TopBottomPanel`, `CentralPanel`, `Window` or `Area`.
         // For inspiration and more examples, go to https://emilk.github.io/egui
 
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
-            // The top panel is often a good place for a menu bar:
-
             egui::MenuBar::new().ui(ui, |ui| {
+
+            // Light mode/dark mode switch
+            egui::widgets::global_theme_preference_switch(ui);
+            
             ui.menu_button("File", |ui| {
                 if ui.button("Quit").clicked() {
                     ctx.send_viewport_cmd(egui::ViewportCommand::Close);
                 }
             });
             
-            ui.add_space(16.0);
+            // ui.add_space(16.0);
                 
-
-                egui::widgets::global_theme_preference_buttons(ui);
             });
         });
 
