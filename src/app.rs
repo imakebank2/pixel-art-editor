@@ -1,9 +1,10 @@
 //! This is where you write the app
-//! 
+use log::{debug, info};
 
 /* Features: Eraser, eyedropper, twocolour choice (left/right click), paint bucket, undo/redo
  Colour palatte: Microsoft paint colour palatte + transparent colour
  Picture import/export to png
+ Zoom: Ctrl + & Ctrl -
 */
 
 // Canvas size is 8x8, 16x16 or 32x32 pixels.
@@ -16,7 +17,7 @@ enum CanvasSize {
 pub struct App {
     label: String,
     value: f32,
-    canvas_size: CanvasSize
+    canvas_size: CanvasSize,
 }
 
 impl App {
@@ -26,7 +27,7 @@ impl App {
             // Default values: 
             label: "Hello World!".to_owned(),
             value: 2.7,
-            canvas_size: CanvasSize::S16
+            canvas_size: CanvasSize::S16,
          }
 
     }
@@ -34,19 +35,18 @@ impl App {
 
 impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-
-        let scaling_factor = ctx.pixels_per_point();
-
         // Put your widgets into a `SidePanel`, `TopBottomPanel`, `CentralPanel`, `Window` or `Area`.
         // For inspiration and more examples, go to https://emilk.github.io/egui
 
-        egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
+        egui::SidePanel::right("top_panel").show(ctx, |ui| {
             egui::MenuBar::new().ui(ui, |ui| {
 
             // Light mode/dark mode switch
             egui::widgets::global_theme_preference_switch(ui);
             
             ui.menu_button("File", |ui| {
+                ui.button("Export");
+                ui.button("Import");
                 if ui.button("Quit").clicked() {
                     ctx.send_viewport_cmd(egui::ViewportCommand::Close);
                 }
