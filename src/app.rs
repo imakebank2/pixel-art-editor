@@ -1,4 +1,6 @@
 //! This is where you write the app
+use std::string;
+
 use log::{debug, info};
 
 /* Features: Eraser, eyedropper, twocolour choice (left/right click), paint bucket, undo/redo
@@ -8,6 +10,17 @@ use log::{debug, info};
 */
 
 const CANVAS_SIZE: i8 = 16;
+
+macro_rules! load_embedded {
+    ($name:literal) => {
+        include_bytes!(concat!("../assets/", $name))
+    };
+}
+
+fn main() {
+    let bytes = load_embedded!("paintbrush_icon.png");
+}
+
 
 pub struct App {
     label: String,
@@ -22,7 +35,6 @@ impl App {
             label: "Hello World!".to_owned(),
             value: 2.7
          }
-
     }
 }
 
