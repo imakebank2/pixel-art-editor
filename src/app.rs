@@ -7,17 +7,11 @@ use log::{debug, info};
  Zoom: Ctrl + & Ctrl -
 */
 
-// Canvas size is 8x8, 16x16 or 32x32 pixels.
-enum CanvasSize {
-    S8 = 8,
-    S16 = 16,
-    S32 = 32
-}
+const CANVAS_SIZE: i8 = 16;
 
 pub struct App {
     label: String,
     value: f32,
-    canvas_size: CanvasSize,
 }
 
 impl App {
@@ -26,8 +20,7 @@ impl App {
         Self {
             // Default values: 
             label: "Hello World!".to_owned(),
-            value: 2.7,
-            canvas_size: CanvasSize::S16,
+            value: 2.7
          }
 
     }
