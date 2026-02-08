@@ -1,7 +1,7 @@
 //! This is where you write the app
-use std::string;
-
 use log::{debug, info};
+use eframe::egui;
+use egui_extras;
 
 /* Features: Eraser, eyedropper, twocolour choice (left/right click), paint bucket, undo/redo
  Colour palatte: Microsoft paint colour palatte + transparent colour
@@ -11,27 +11,24 @@ use log::{debug, info};
 
 const CANVAS_SIZE: i8 = 16;
 
-macro_rules! load_embedded {
-    ($name:literal) => {
-        include_bytes!(concat!("../assets/", $name))
-    };
-}
-
-fn main() {
-    let bytes = load_embedded!("paintbrush_icon.png");
-}
-
-
 pub struct App {
     label: String,
     value: f32,
+    eraser_image: egui::ImageSource<'static>,
+    eyedropper_image: egui::ImageSource<'static>,
+    paintbucket_image: egui::ImageSource<'static>,
+    pencil_image: egui::ImageSource<'static>
 }
 
 impl App {
     // Called once before the first frame.
-    pub fn new(_cc: &eframe::CreationContext) -> Self {
+    pub fn new(cc: &eframe::CreationContext) -> Self {
+        egui_extras::install_image_loaders(&cc.egui_ctx);
         Self {
-            // Default values: 
+            eraser_image: egui::include_image!("../assets/eraser_tool_button.png"),
+            eyedropper_image: egui::include_image!("../assets/eyedropper_tool_button.png"),
+            paintbucket_image: egui::include_image!("../assets/paintbucket_tool_button.png"),
+            pencil_image: egui::include_image!("../assets/pencil_tool_button.png"),
             label: "Hello World!".to_owned(),
             value: 2.7
          }
@@ -44,7 +41,8 @@ impl eframe::App for App {
         // For inspiration and more examples, go to https://emilk.github.io/egui
 
         egui::SidePanel::left("toolbar").show(ctx, |ui| {
-            egui::MenuBar::new().ui(ui, |ui| {
+            
+                egui::MenuBar::new().ui(ui, |ui| {
 
             // Light mode/dark mode switch
             egui::widgets::global_theme_preference_switch(ui);

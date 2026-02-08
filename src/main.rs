@@ -10,14 +10,17 @@ fn main() -> eframe::Result {
             .with_min_inner_size([300.0, 220.0])
             .with_icon(
             eframe::icon_data::from_png_bytes(&include_bytes!("../assets/paintbrush_icon.png")[..])
-                .expect("Failed to load icon"),
+                .expect("Failed to load icon")
         ),
         ..Default::default()
     };
     eframe::run_native(
         "Pixel art editor",
         native_options,
-        Box::new(|cc| Ok(Box::new(pixel_art_editor::App::new(cc)))),
+        Box::new(|cc| {
+            egui_extras::install_image_loaders(&cc.egui_ctx);
+            Ok(Box::new(pixel_art_editor::App::new(cc)))
+        }),
     )
 }
 
