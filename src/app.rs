@@ -10,7 +10,7 @@ use egui_extras;
  Zoom: Ctrl + & Ctrl -
 */
 
-const CANVAS_SIZE: i8 = 16;
+const CANVAS_SIZE: usize = 16;
 
 enum Tool {
     Pencil,
