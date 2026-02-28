@@ -87,7 +87,7 @@ impl App {
             value: 2.7,
             selected_colour: Color::Black,
             selected_tool: Tool::Pencil,
-            pixel_canvas: vec![Color::Transparent; (CANVAS_SIZE * CANVAS_SIZE) as usize]
+            pixel_canvas: vec![Color::Transparent; CANVAS_SIZE * CANVAS_SIZE]
          }
     }
 }
@@ -113,18 +113,26 @@ impl eframe::App for App {
                 }
             }); 
 
-            
-
             if ui.button("Help").clicked() {
 
             }
         });
 
         ui.horizontal_wrapped(|ui| {
-            add_button(&self.pencil_image, ui);
-            add_button(&self.eraser_image, ui);
-            add_button(&self.eyedropper_image, ui);
-            add_button(&self.paintbucket_image, ui);
+            let pencil_button = add_button(&self.pencil_image, ui);
+            let eraser_button = add_button(&self.eraser_image, ui);
+            let eyedropper_button = add_button(&self.eyedropper_image, ui);
+            let paintbucket_button = add_button(&self.paintbucket_image, ui);
+
+            if pencil_button.clicked() {
+                self.selected_tool = Tool::Pencil;
+            } else if eraser_button.clicked() {
+                self.selected_tool = Tool::Eraser;
+            } else if eyedropper_button.clicked() {
+                self.selected_tool = Tool::Eyedropper;
+            } else if paintbucket_button.clicked() {
+                self.selected_tool = Tool::PaintBucket;
+            }
         })
         
     });
@@ -150,12 +158,14 @@ impl eframe::App for App {
     }
 }
 
-fn add_button(image: &ImageSource, ui: &mut Ui) -> () {
+fn add_button(image: &ImageSource, ui: &mut Ui) -> Response {
     const BUTTON_SIZE: f32 = 30.0;
 
     let button_image = Image::new(image.clone())
     .fit_to_exact_size(Vec2{x: BUTTON_SIZE, y: BUTTON_SIZE});
 
     let button = Button::image(button_image);
-    ui.add(button);
+    ui.add(button)
 }
+
+
