@@ -10,7 +10,8 @@ use egui_extras;
  Zoom: Ctrl + & Ctrl -
 */
 
-const CANVAS_SIZE: usize = 16;
+const TOOL_BUTTON_SIZE: f32 = 30.0;
+const CANVAS_LENGTH: usize = 16;
 
 enum Tool {
     Pencil,
@@ -71,7 +72,7 @@ pub struct App {
     pencil_image: ImageSource<'static>,
     selected_colour: Color,
     selected_tool: Tool,
-    pixel_canvas: Vec<Color>
+    pixel_canvas: Box<[Color; CANVAS_LENGTH * CANVAS_LENGTH]>
 }
 
 impl App {
@@ -87,7 +88,7 @@ impl App {
             value: 2.7,
             selected_colour: Color::Black,
             selected_tool: Tool::Pencil,
-            pixel_canvas: vec![Color::Transparent; CANVAS_SIZE * CANVAS_SIZE]
+            pixel_canvas: Box::new([Color::Transparent; CANVAS_LENGTH * CANVAS_LENGTH])
          }
     }
 }
@@ -99,30 +100,30 @@ impl eframe::App for App {
 
         SidePanel::left("toolbar").show(ctx, |ui| {
             
-                MenuBar::new().ui(ui, |ui| {
+            MenuBar::new().ui(ui, |ui| {
 
-            // Light mode/dark mode switch
-            widgets::global_theme_preference_switch(ui);
-            
-            ui.menu_button("File", |ui| {
-                if ui.button("Export as png").clicked() {
+                // Light mode/dark mode switch
+                widgets::global_theme_preference_switch(ui);
+                
+                ui.menu_button("File", |ui| {
+                    if ui.button("Export as png").clicked() {
+
+                    }
+                    if ui.button("Import from png").clicked() {
+
+                    }
+                }); 
+
+                if ui.button("Help").clicked() {
 
                 }
-                if ui.button("Import from png").clicked() {
-
-                }
-            }); 
-
-            if ui.button("Help").clicked() {
-
-            }
         });
 
         ui.horizontal_wrapped(|ui| {
-            let pencil_button = add_button(&self.pencil_image, ui);
-            let eraser_button = add_button(&self.eraser_image, ui);
-            let eyedropper_button = add_button(&self.eyedropper_image, ui);
-            let paintbucket_button = add_button(&self.paintbucket_image, ui);
+            let pencil_button = add_image_button(&self.pencil_image, ui);
+            let eraser_button = add_image_button(&self.eraser_image, ui);
+            let eyedropper_button = add_image_button(&self.eyedropper_image, ui);
+            let paintbucket_button = add_image_button(&self.paintbucket_image, ui);
 
             if pencil_button.clicked() {
                 self.selected_tool = Tool::Pencil;
@@ -133,8 +134,12 @@ impl eframe::App for App {
             } else if paintbucket_button.clicked() {
                 self.selected_tool = Tool::PaintBucket;
             }
+
+            //ui.add(egui::Separator::default().horizontal().spacing(10.0));
+            
+            add_color_button(Color::Black, ui)
+
         })
-        
     });
 
         CentralPanel::default().show(ctx, |ui| {
@@ -158,13 +163,19 @@ impl eframe::App for App {
     }
 }
 
-fn add_button(image: &ImageSource, ui: &mut Ui) -> Response {
-    const BUTTON_SIZE: f32 = 30.0;
-
+fn add_image_button(image: &ImageSource, ui: &mut Ui) -> Response {
     let button_image = Image::new(image.clone())
-    .fit_to_exact_size(Vec2{x: BUTTON_SIZE, y: BUTTON_SIZE});
+    .fit_to_exact_size(Vec2::new(TOOL_BUTTON_SIZE, TOOL_BUTTON_SIZE));
 
     let button = Button::image(button_image);
+    ui.add(button)
+}
+
+fn add_color_button(color: Color, ui: &mut Ui) -> Response {
+    let button = Button::new("")
+    .fill(color.to_color32())
+    .min_size(Vec2::new(TOOL_BUTTON_SIZE, TOOL_BUTTON_SIZE));
+
     ui.add(button)
 }
 

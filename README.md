@@ -1,2 +1,0 @@
-# Pixel art editor
-Hi
