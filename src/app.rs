@@ -72,7 +72,7 @@ pub struct App {
     pencil_image: ImageSource<'static>,
     selected_colour: Color,
     selected_tool: Tool,
-    pixel_canvas: Box<[Color; CANVAS_LENGTH * CANVAS_LENGTH]>
+    pixel_canvas: [Color; CANVAS_LENGTH * CANVAS_LENGTH]
 }
 
 impl App {
@@ -88,7 +88,7 @@ impl App {
             value: 2.7,
             selected_colour: Color::Black,
             selected_tool: Tool::Pencil,
-            pixel_canvas: Box::new([Color::Transparent; CANVAS_LENGTH * CANVAS_LENGTH])
+            pixel_canvas: [Color::Transparent; CANVAS_LENGTH * CANVAS_LENGTH]
          }
     }
 }
