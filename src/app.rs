@@ -24,7 +24,7 @@ enum Tool {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u32)] // All values are unsigned 32-bit integers, in ARGB format
-pub enum Color {
+enum Color {
     Transparent = 0x00000000,
     Black       = 0xFF000000,
     LightGrey   = 0xFF7F7F7F,
@@ -61,6 +61,30 @@ impl Color {
 
         Color32::from_rgba_unmultiplied(r, g, b, a)
     }
+
+    const ALL_COLORS: [Color; 20] = [
+        Color::Black,
+        Color::White,
+        Color::LightGrey,
+        Color::DarkGrey,
+        Color::Maroon,
+        Color::Red,
+        Color::Brown,
+        Color::Orange,
+        Color::Gold,
+        Color::Yellow,
+        Color::Beige,
+        Color::Lime,
+        Color::Green,
+        Color::SkyBlue,
+        Color::SteelBlue,
+        Color::Cyan,
+        Color::Indigo,
+        Color::Purple,
+        Color::Pink,
+        Color::Lavender
+    ];
+
 }
 
 pub struct App {
@@ -70,7 +94,8 @@ pub struct App {
     eyedropper_image: ImageSource<'static>,
     paintbucket_image: ImageSource<'static>,
     pencil_image: ImageSource<'static>,
-    selected_colour: Color,
+    selected_colour_1: Color,
+    selected_colour_2: Color,
     selected_tool: Tool,
     pixel_canvas: [Color; CANVAS_LENGTH * CANVAS_LENGTH]
 }
@@ -86,7 +111,8 @@ impl App {
             pencil_image: include_image!("../assets/pencil_tool_button.png"),
             label: "Hello World!".to_owned(),
             value: 2.7,
-            selected_colour: Color::Black,
+            selected_colour_1: Color::Black,
+            selected_colour_2: Color::White,
             selected_tool: Tool::Pencil,
             pixel_canvas: [Color::Transparent; CANVAS_LENGTH * CANVAS_LENGTH]
          }
@@ -135,10 +161,16 @@ impl eframe::App for App {
                 self.selected_tool = Tool::PaintBucket;
             }
 
-            //ui.add(egui::Separator::default().horizontal().spacing(10.0));
-            
-            add_color_button(Color::Black, ui)
+            ui.separator();
 
+            for color_button in Color::ALL_COLORS {
+                let button = add_color_button(color_button, ui);
+                if button.clicked() {
+                    self.selected_colour_1 = color_button;
+                } else if button.secondary_clicked() {
+                    self.selected_colour_2 = color_button;
+                }
+            }
         })
     });
 
